@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function signIn($email, $password)
+    public function signIn(Request $request)
     {
-        $user = User::where('email', $email)->first();
+        $user = User::where('email', $request->email)->first();
 
         if ($user === null) {
             return response()->json(['errors' => 'No user with that email.'], 404);
         }
 
-        if (Hash::check($password, $user->password)) {
+        if (Hash::check($request->password, $user->password)) {
             return response()->json([
                 'user' => $user,
                 'authorization' => [
@@ -56,7 +56,6 @@ class AuthController extends Controller
         )])->save();
 
         return response()->json([
-            'user' => $user,
             'authorization' => [
                 'token' => $user->createToken('apiToken')->plainTextToken,
                 'type' => 'bearer'

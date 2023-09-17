@@ -25,4 +25,8 @@ Route::get('/projects', [
 
 Route::post('/sign-up', [AuthController::class, 'signUp']);
 Route::post('/sign-in', [AuthController::class, 'signIn']);
-Route::middleware('auth:sanctum')->post('/sign-off', [AuthController::class, 'signOff']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    //for errors add Accept and application/json to headers
+    Route::post('/sign-off', [AuthController::class, 'signOff']);
+});
