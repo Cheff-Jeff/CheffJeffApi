@@ -38,7 +38,6 @@ class DatabaseSeeder extends Seeder
             'last_name' => 'Jeff',
             'email' => $faker->unique()->safeEmail(),
             'password' => Str::password(),
-            'salt' => Str::random(10),
         ]);
 
         User::factory()->create([
@@ -47,7 +46,6 @@ class DatabaseSeeder extends Seeder
             'last_name' => $faker->lastName(),
             'email' => $faker->unique()->safeEmail(),
             'password' => Str::password(),
-            'salt' => Str::random(10),
         ]);
 
         User::factory()->create([
@@ -56,7 +54,6 @@ class DatabaseSeeder extends Seeder
             'last_name' => $faker->lastName(),
             'email' => $faker->unique()->safeEmail(),
             'password' => Str::password(),
-            'salt' => Str::random(10),
         ]);
     }
 }
