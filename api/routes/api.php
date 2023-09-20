@@ -16,17 +16,18 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "api" middleware group. Make something great!
 |
+| for errors add Accept and application/json to headers
+|
 */
 
-Route::get('/projects', [
-    ProjectController::class,
-    'index'
-]);
-
-Route::post('/sign-up', [AuthController::class, 'signUp']);
 Route::post('/sign-in', [AuthController::class, 'signIn']);
 
+//user-routs
 Route::middleware('auth:sanctum')->group(function () {
-    //for errors add Accept and application/json to headers
+    Route::post('/sign-up', [AuthController::class, 'signUp']);
     Route::post('/sign-off', [AuthController::class, 'signOff']);
+    Route::put('/user/update', [UserController::class, 'update']);
+    Route::put('/user/update-role', [UserController::class, 'updateRole']);
+    Route::delete('/user/delete', [UserController::class, 'destroy']);
+    Route::delete('/user/delete-user', [UserController::class, 'destroyUser']);
 });

@@ -54,4 +54,14 @@ class User extends Authenticatable
             'password' => 'required|string|min:10',
         ]);
     }
+
+    public function validateUpdate(array $data)
+    {
+        return Validator::make($data, [
+            'first_name' => 'string|max:255',
+            'last_name' => 'string|max:255',
+            'email' => 'string|email|max:255|unique:users',
+            'password' => 'string|min:10',
+        ]);
+    }
 }
