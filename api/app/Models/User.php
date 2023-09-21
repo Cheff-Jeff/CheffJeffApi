@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function right()
     {
-        return $this->hasOne(UserRight::class);
+        return $this->belongsTo(UserRight::class);
     }
 
     public function website()
