@@ -9,64 +9,67 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    private $allowedParamsSignIn = ['email', 'password'];
+    private $allowedParamsSignUp = ['first_name', 'last_name', 'email', 'password', 'right_id'];
+
     public function signIn(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
-
-        if ($user === null) {
-            return response()->json(['errors' => 'No user with that email.'], 404);
+        if ($request->missing($this->allowedParamsSignIn)) {
+            return sendError("Missing required parameters.", 422);
         }
 
-        if (Hash::check($request->password, $user->password)) {
-            return response()->json([
-                'user' => $user,
-                'authorization' => [
-                    'token' => $user->createToken('apiToken')->plainTextToken,
-                    'type' => 'bearer'
-                ]
-            ]);
+        $filteredRequest = $request->only($this->allowedParamsSignIn);
+        $user = User::where('email', $filteredRequest['email'])->first();
+
+        if ($user === null) {
+            return sendError("User not found.", 404);
+        }
+
+        if (Hash::check($filteredRequest['password'], $user->password)) {
+            return authorize($user->createToken('apiToken')->plainTextToken);
         } else {
-            return response()->json(['errors' => 'Authentication failed.'], 422);
+            return sendError("Authentication failed.", 401);
         }
     }
 
     public function signUp(Request $request)
     {
+        if ($request->missing($this->allowedParamsSignUp)) {
+            return sendError("Missing required parameters.", 422);
+        }
+        $filteredRequest = $request->only($this->allowedParamsSignUp);
+        $authUser = $request->user();
+        if ($authUser->right->right === "editor") {
+            sendError("You do not have permission to do this.", 403);
+        }
+
         $user = new User();
-        $rightId = 0;
-        $validation = $user->validate($request->all());
+        $validation = $user->validate($filteredRequest);
 
         if ($validation->fails()) {
-            return response()->json(['errors' => $validation->errors()], 422);
+            return sendError($validation->errors(), 422);
         }
 
-        if ($request->right === null) {
-            $right = UserRight::where('right', 'editor')->first();
-            $rightId = $right->id;
+        $user->fill($filteredRequest);
+
+        if (!isset($filteredRequest['right_id'])) {
+            $user->right_id = UserRight::where('right', 'editor')->first()->id;
         } else {
-            $right = UserRight::where('right', $request->right)->first();
-            $rightId = $right->id;
+            $user->right_id = UserRight::findOrFail($filteredRequest['right_id'])->id;
         }
 
-        $user->fill($request->all());
-        $user->right_id = $rightId;
         $user->fill(['password' => Hash::make(
-            $request->password,
+            $filteredRequest['password'],
             ['rounds' => 12]
         )])->save();
 
-        return response()->json([
-            'authorization' => [
-                'token' => $user->createToken('apiToken')->plainTextToken,
-                'type' => 'bearer'
-            ]
-        ]);
+        return authorize($user->createToken('apiToken')->plainTextToken);
     }
 
     public function signOff(Request $request)
     {
         $user = $request->user();
         $user->tokens()->delete();
-        return response()->json(['message' => 'Successfully signed off.']);
+        return sendSuccess("Signed off.");
     }
 }

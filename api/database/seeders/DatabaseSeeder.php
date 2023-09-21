@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserRight;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
@@ -36,8 +37,8 @@ class DatabaseSeeder extends Seeder
             'right_id' => $superAdmin->id,
             'first_name' => 'Cheff',
             'last_name' => 'Jeff',
-            'email' => $faker->unique()->safeEmail(),
-            'password' => Str::password(),
+            'email' => 'jeffrey@cheffjeff.nl',
+            'password' => Hash::make("adminadmin", ['rounds' => 12]),
         ]);
 
         User::factory()->create([
@@ -45,7 +46,7 @@ class DatabaseSeeder extends Seeder
             'first_name' => $faker->firstName(),
             'last_name' => $faker->lastName(),
             'email' => $faker->unique()->safeEmail(),
-            'password' => Str::password(),
+            'password' => Hash::make("adminadmin", ['rounds' => 12]),
         ]);
 
         User::factory()->create([
@@ -53,7 +54,7 @@ class DatabaseSeeder extends Seeder
             'first_name' => $faker->firstName(),
             'last_name' => $faker->lastName(),
             'email' => $faker->unique()->safeEmail(),
-            'password' => Str::password(),
+            'password' => Hash::make("adminadmin", ['rounds' => 12]),
         ]);
     }
 }

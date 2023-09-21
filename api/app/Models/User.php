@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function right()
     {
-        return $this->hasOne(UserRight::class);
+        return $this->belongsTo(UserRight::class);
     }
 
     public function website()
@@ -52,6 +52,16 @@ class User extends Authenticatable
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:10',
+        ]);
+    }
+
+    public function validateUpdate(array $data)
+    {
+        return Validator::make($data, [
+            'first_name' => 'string|max:255',
+            'last_name' => 'string|max:255',
+            'email' => 'string|email|max:255|unique:users',
+            'password' => 'string|min:10',
         ]);
     }
 }
