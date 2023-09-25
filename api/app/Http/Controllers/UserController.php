@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserRight;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -69,7 +70,7 @@ class UserController extends Controller
         $filteredRequest = $request->only($this->allowedParamsUpdateRole);
 
         $user = User::findOrFail($filteredRequest['user_id']);
-        $user->role_id = Right::findOrFail($filteredRequest['role_id'])->id;
+        $user->role_id = UserRight::findOrFail($filteredRequest['role_id'])->id;
         $user->save();
 
         return sendSuccess("User updated.");

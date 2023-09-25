@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         $superAdmin = UserRight::factory()->create([
-            'right' => 'supper-admin',
+            'right' => 'super-admin',
         ]);
 
         $admin = UserRight::factory()->create([

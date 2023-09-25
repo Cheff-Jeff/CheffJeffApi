@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 function sendError($message, $code)
 {
     return response()->json([
@@ -22,4 +24,13 @@ function authorize($token)
             'type' => 'bearer'
         ]
     ]);
+}
+
+
+function checkSuperAdmin(Request $request)
+{
+    return [
+        "isSuperAdmin" => $request->user()->right->right === "supper-admin" ? true : false,
+        "websiteId" => $request->header('websiteTarget')
+    ];
 }

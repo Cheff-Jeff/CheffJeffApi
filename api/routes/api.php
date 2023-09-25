@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\WebsitePageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,4 +32,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user/update-role', [UserController::class, 'updateRole']);
     Route::delete('/user/delete', [UserController::class, 'destroy']);
     Route::delete('/user/delete-user', [UserController::class, 'destroyUser']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/new-webiste', [WebsiteController::class, 'store']);
+    Route::get('/websites', [WebsiteController::class, 'index']);
+    Route::get('/website', [WebsiteController::class, 'show']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/pages', [WebsitePageController::class, 'store']);
 });
